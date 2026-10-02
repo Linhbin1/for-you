@@ -94,6 +94,12 @@ app.post("/unlock", (req, res) => {
   res.setHeader("Set-Cookie", `birthday_session=${token}; HttpOnly; SameSite=Lax; Path=/; Max-Age=7200${process.env.NODE_ENV === "production" ? "; Secure" : ""}`);
   res.redirect(303, "/letter");
 });
+app.get("/letter", (req, res) => {
+  if (!validSession(req)) return res.redirect("/");
+  res.set("Cache-Control", "no-store");
+  res.send(letterPage);
+});
+
 const letterPage = page("给你的一份生日惊喜 ♡", `
 <div class="particle-intro" id="particleIntro" aria-hidden="true">
   <canvas id="heartCanvas"></canvas>
